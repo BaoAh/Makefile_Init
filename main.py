@@ -14,26 +14,36 @@ def init_dir(settings):
     root_dir=settings["root_dir"]
     check_n_mkdir(root_dir)
     src_name=settings["src_dir"]
+    script_name=settings["script_dir"]
     inc_name=settings["inc_dir"]
     build_name=settings["build_dir"]
     docs_name=settings["docs_dir"]
     # print(settings)
     src_ex,src_dir = fp.check_directory_existence(root_dir,src_name)
+    script_ex,script_dir = fp.check_directory_existence(root_dir,script_name)
     include_ex,include_dir = fp.check_directory_existence(root_dir,inc_name)
     build_ex,build_dir = fp.check_directory_existence(root_dir,build_name)
     docs_ex,docs_dir = fp.check_directory_existence(root_dir,docs_name)
     if not src_ex:
         src_dir = os.path.join(root_dir, src_dir)
-        os.makedirs(src_dir)    
+        os.makedirs(src_dir)  
+        print("create src directory")
     if not include_ex:
         include_dir = os.path.join(root_dir,include_dir)
         os.makedirs(include_dir)
+        print("create include directory")
     if not build_ex:
         build_dir = os.path.join(root_dir, build_dir)
         os.makedirs(build_dir)
+        print("create build directory")
+    if not script_ex:
+        script_dir = os.path.join(root_dir, script_dir)
+        os.makedirs(script_dir)    
+        print("create script directory")
     if not docs_ex:
         docs_dir = os.path.join(root_dir, docs_dir)
         os.makedirs(docs_dir)
+        print("create docs directory")
         
 
 def args_parser():
@@ -44,6 +54,8 @@ def args_parser():
     parser.add_argument("-p","--python_project",dest="python_project",action="store_true",help="create a new python project")
     parser.add_argument("-f", "--flags", dest="flags", help="flags for the compiler and typed within quotes", default="")
     parser.add_argument("-o", "--output-target", dest="target", help="output file name from compiler. Default: a.out", default="a.out")
+    parser.add_argument("-s", "--custom-setting", dest="cs",action="store_true", help="customize your file structure using json")
+    parser.add_argument("-r", "--rearrange file", dest="ra",action="store_true", help="rearrange file")
     args = parser.parse_args()
     return args,parser
 
@@ -67,9 +79,12 @@ def project_init():
         elif args.python_project:
             print("Initializing a python project...")
         
-        with open(os.path.join(cf.conf["root_dir"],"Makefile_tmp"), "w") as makefile:
+        with open(os.path.join(cf.conf["root_dir"],"Makefile"), "w") as makefile:
             makefile.write(makefile_content)
-
+            print("writing Makefile...")
+        print("create successfully")
+        os.system('tree {}'.format(cf.conf["root_dir"]))
+        
 
 if __name__ == "__main__":
     project_init()
